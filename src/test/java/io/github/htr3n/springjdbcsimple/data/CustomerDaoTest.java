@@ -23,7 +23,7 @@ public class CustomerDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void create() {
+    public void testCreate() {
         Customer alice = new Customer();
         alice.setEmail("alice@test.com");
         alice.setName("Alice");
@@ -42,7 +42,7 @@ public class CustomerDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void findCustomerById() {
+    public void testFindCustomerById() {
         // test an invalid case: no customer in the DB
         Customer invalidCustomer = customerDao.findCustomerById(new Random().nextInt());
         assertNull(invalidCustomer);
@@ -63,7 +63,7 @@ public class CustomerDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void findAll() {
+    public void testFindAll() {
         // test against an empty DB
         // where we should retrieve a non-null empty list
         List<Customer> noCustomers = customerDao.findAll();
@@ -109,7 +109,7 @@ public class CustomerDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void update() {
+    public void testUpdate() {
         // create and store a customer
         Customer customer = new Customer();
         customer.setEmail("alice@test.com");
@@ -133,7 +133,7 @@ public class CustomerDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void delete() {
+    public void testDelete() {
         // create and store a customer
         Customer alice = new Customer();
         alice.setEmail("alice@test.com");
