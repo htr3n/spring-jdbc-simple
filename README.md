@@ -7,7 +7,7 @@ This simple development project is a showcase contains a domain model [`Customer
 
 The main goal is to illustrate how Spring JDBC (with `JdbcTemplate` and Spring Boot auto-configuration) works with minimal setting and dependencies.
 
-Most of JDBC functionality are in `CustomerDao` CRUD methods. A test case [`CustomerDaoTest](https://github.com/htr3n/spring-jdbc-simple/blob/master/src/test/java/io/github/htr3n/springjdbcsimple/data/CustomerDaoTest.java)` shows the usage of these CRUD methods.
+Most of JDBC functionality are in `CustomerDao` CRUD methods. A test case [`CustomerDaoTest`](https://github.com/htr3n/spring-jdbc-simple/blob/master/src/test/java/io/github/htr3n/springjdbcsimple/data/CustomerDaoTest.java) shows the usage of these CRUD methods.
 
 ## Quick Start
 
