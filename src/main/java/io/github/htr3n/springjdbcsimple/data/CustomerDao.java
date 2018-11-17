@@ -44,21 +44,27 @@ public class CustomerDao {
     // When there is no row: <https://stackoverflow.com/a/16390624/339302>
 	public Customer findCustomerById(Integer id) {
 		String sql = "SELECT id, name, email FROM customer WHERE id = ?";
+
+		// JdbcTemplate.queryForObject() only used for known outcome, e.g. the input must be
+        // a single row/column query
+        //return jdbcTemplate.queryForObject(sql, new Object[] { id }, new CustomerMapper());
 		return this.jdbcTemplate.query(sql,
 				rs -> rs.next() ? new CustomerMapper().mapRow(rs, 1): null,
                 id);
 	}
 
     // Update
-	public void update(Customer customer) {
+	public boolean update(Customer customer) {
 		String sql = "UPDATE customer SET name=?, email=? WHERE id=?";
-		this.jdbcTemplate.update(sql, customer.getName(), customer.getEmail(), customer.getId());
+		Object[] params = new Object[]{customer.getName(), customer.getEmail(), customer.getId()};
+		return this.jdbcTemplate.update(sql, params) == 1;
 	}
 
     // Delete
 	public boolean delete(Integer id) {
 		String sql = "DELETE FROM customer WHERE id = ?";
-		return this.jdbcTemplate.update(sql, new Object[]{id}) == 1;
+        Object[] params = new Object[]{id};
+		return this.jdbcTemplate.update(sql, params) == 1;
 	}
 
     class CustomerMapper implements RowMapper<Customer> {

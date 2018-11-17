@@ -110,18 +110,27 @@ public class CustomerDaoTest {
     @Transactional
     @Rollback
     public void testUpdate() {
-        // create and store a customer
+        // update a non-existing customer
+        Customer nonExistingCustomer = new Customer();
+        nonExistingCustomer.setEmail("nonexisting@test.com");
+        nonExistingCustomer.setName("Non-existing");
+        nonExistingCustomer.setId(new Random().nextInt());
+        assertFalse(customerDao.update(nonExistingCustomer));
+
+        // now, create and store a customer
         Customer customer = new Customer();
         customer.setEmail("alice@test.com");
         customer.setName("Alice");
         customerDao.create(customer);
 
         assertNotNull(customer.getId());
+        // update with the same input
+        assertTrue(customerDao.update(customer));
 
-        // update an existing customer
+        // update with different input
         customer.setName("Bob");
         customer.setEmail("bob@test.com");
-        customerDao.update(customer);
+        assertTrue(customerDao.update(customer));
 
         // retrieve and compare
         Customer result = customerDao.findCustomerById(customer.getId());
