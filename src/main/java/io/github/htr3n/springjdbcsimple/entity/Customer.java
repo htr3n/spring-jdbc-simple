@@ -1,4 +1,4 @@
-package io.github.htr3n.springjdbcsimple.data;
+package io.github.htr3n.springjdbcsimple.entity;
 
 public class Customer {
 	private Integer id;
