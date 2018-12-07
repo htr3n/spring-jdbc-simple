@@ -1,6 +1,7 @@
 package io.github.htr3n.springjdbcsimple.dao;
 
 import io.github.htr3n.springjdbcsimple.entity.Customer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +30,30 @@ public class CustomerDaoTest {
     @Autowired
     private CustomerDao customerDao;
 
+    private Customer alice;
+    private Customer bob;
+
+    @Before
+    public void setUp(){
+        alice = new Customer();
+        alice.setName(ALICE_NAME);
+        alice.setEmail(ALICE_EMAIL);
+
+        bob = new Customer();
+        bob.setName(BOB_NAME);
+        bob.setEmail(BOB_EMAIL);
+    }
+
     @Test
     public void create_shouldReturnValidCustomer_whenAddingNewCustomer() {
 
-        Customer alice = new Customer();
-        alice.setName(ALICE_NAME);
-        alice.setEmail(ALICE_EMAIL);
         customerDao.create(alice);
 
         assertThat(alice.getId()).isNotNull();
         
         Optional<Customer> result = customerDao.findById(alice.getId());
 
-        assertThat(result.isPresent()).isTrue();
+        assertThat(result).isPresent();
         assertThat(alice).hasFieldOrPropertyWithValue("name", ALICE_NAME);
         assertThat(alice).hasFieldOrPropertyWithValue("email", ALICE_EMAIL);
     }
@@ -54,13 +66,11 @@ public class CustomerDaoTest {
 
     @Test
     public void findById_shouldReturnValidCustomer_forExistingCustomer() {
-        final Customer alice = new Customer();
-        alice.setName(ALICE_NAME);
-        alice.setEmail(ALICE_EMAIL);
         customerDao.create(alice);
 
         Optional<Customer> validCustomer = customerDao.findById(alice.getId());
-        assertThat(validCustomer.isPresent()).isTrue();
+
+        assertThat(validCustomer).isPresent();
         assertThat(validCustomer.get().getName()).isEqualTo(alice.getName());
         assertThat(validCustomer.get().getEmail()).isEqualTo(alice.getEmail());
     }
@@ -74,25 +84,19 @@ public class CustomerDaoTest {
     @Test
     public void findAll_shouldYieldListOfCustomers_forNonemptyDatabase() {
 
-        Customer alice = new Customer();
-        alice.setName(ALICE_NAME);
-        alice.setEmail(ALICE_EMAIL);
         customerDao.create(alice);
-
         List<Customer> customers = customerDao.findAll();
+
         assertThat(customers).isNotNull().hasSize(ONE_CUSTOMER);
 
         Customer result = customers.get(0);
+
         assertThat(result).hasFieldOrPropertyWithValue("name", ALICE_NAME);
         assertThat(result).hasFieldOrPropertyWithValue("email", ALICE_EMAIL);
 
-
-        Customer bob = new Customer();
-        bob.setName(BOB_NAME);
-        bob.setEmail(BOB_EMAIL);
         customerDao.create(bob);
-
         customers = customerDao.findAll();
+
         assertThat(customers).isNotNull().hasSize(TWO_CUSTOMERS);
     }
 
@@ -105,22 +109,20 @@ public class CustomerDaoTest {
 
     @Test
     public void update_shouldYieldTrue_forExistingCustomer() {
-        Customer customer = new Customer();
-        customer.setName(ALICE_NAME);
-        customer.setEmail(ALICE_EMAIL);
-        customerDao.create(customer);
+        customerDao.create(alice);
 
-        assertThat(customer.getId()).isNotNull();
-        assertThat(customerDao.update(customer)).isTrue();
+        assertThat(alice.getId()).isNotNull();
+        assertThat(customerDao.update(alice)).isTrue();
 
-        customer.setName(BOB_NAME);
-        customer.setEmail(BOB_EMAIL);
-        assertThat(customerDao.update(customer)).isTrue();
+        alice.setName(BOB_NAME);
+        alice.setEmail(BOB_EMAIL);
+        assertThat(customerDao.update(alice)).isTrue();
 
-        Optional<Customer> found = customerDao.findById(customer.getId());
-        assertThat(found.isPresent()).isTrue();
-        assertThat(found.get().getName()).isEqualTo(customer.getName());
-        assertThat(found.get().getEmail()).isEqualTo(customer.getEmail());
+        Optional<Customer> found = customerDao.findById(alice.getId());
+
+        assertThat(found).isPresent();
+        assertThat(found.get().getName()).isEqualTo(alice.getName());
+        assertThat(found.get().getEmail()).isEqualTo(alice.getEmail());
     }
 
     @Test
@@ -130,11 +132,7 @@ public class CustomerDaoTest {
 
     @Test
     public void delete_shouldYieldTrue_forExistingCustomer() {
-        Customer alice = new Customer();
-        alice.setName(ALICE_NAME);
-        alice.setEmail(ALICE_EMAIL);
         customerDao.create(alice);
-
         assertThat(customerDao.findAll()).hasSize(ONE_CUSTOMER);
         assertThat(customerDao.delete(alice.getId())).isTrue();
         assertThat(customerDao.findById(alice.getId()).isPresent()).isFalse();
